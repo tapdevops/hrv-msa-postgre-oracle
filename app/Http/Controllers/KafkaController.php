@@ -11,11 +11,11 @@ class KafkaController extends Controller {
 
     public function __construct() {
 		$this->eharvesting_oracle = DB::connection( 'eharvesting_oracle' );
-		$this->eharvesting_pgsql = DB::connection( 'eharvesting_pgsql' );
+		// $this->eharvesting_pgsql = DB::connection( 'eharvesting_pgsql' );
 	}
 	
 	public function test() {
-		$eharvesting_oracle = $this->eharvesting_pgsql->select( "SELECT * FROM TR_DELIVERY_H WHERE ID < 300" );
+		$eharvesting_oracle = $this->eharvesting_oracle->select( "SELECT * FROM TR_DELIVERY_H WHERE ID < 300" );
 		$eharvesting_pgsql = $this->eharvesting_pgsql->select( "SELECT * FROM \"TR_DELIVERY_H\" WHERE \"ID\" < 300" );
 		dd($eharvesting_oracle,$eharvesting_pgsql);
 	}
@@ -30,8 +30,8 @@ class KafkaController extends Controller {
 		}
 	}
 	
-	# PHP Kafka HRV_MSA_PROCESS_TR_DELIVERY_H
-	public function HRV_MSA_PROCESS_TR_DELIVERY_H() {
+	# PHP Kafka HRV_MSA_PROCESS_TRANSACTION
+	public function HRV_MSA_PROCESS_TRANSACTION($topic) {
 		// Kafka Config
 		$conf = new RdKafka\Conf();
 		$conf->set( 'group.id', 'MSA_INTERNAL_GROUP' );
@@ -39,7 +39,6 @@ class KafkaController extends Controller {
 		// $conf->set('sasl.mechanisms', 'PLAIN');
 		// $conf->set('sasl.username', 'admin' );
 		// $conf->set('sasl.password', '12345' );
-		$topic = "HRV_MSA_PROCESS_TR_DELIVERY_H";
 		$Kafka = new RdKafka\Consumer( $conf );
 
 		//$Kafka->addBrokers( config('app.kafkahost') );
@@ -65,15 +64,14 @@ class KafkaController extends Controller {
 				$payload = json_decode( $message->payload, true );
 				// print $message->payload.PHP_EOL;
 				$last_offset = $this->cek_offset_payload( $topic );
-				$last_offset = 0;
 				if ( $last_offset !== false ) {
 					if ( $last_offset ==null) {
 						if( (int)$message->offset >= $last_offset ){
-							echo $this->HRV_MSA_PROCESS_TR_DELIVERY_H_SAVE( $payload, (int)$message->offset );
+							echo $this->HRV_MSA_PROCESS_TRANSACTION_STATEMENT( $payload, (int)$message->offset, $topic, str_replace('HRV_MSA_PROCESS_', '', $topic) );
 						}	
 					} else {
 						if ( (int)$message->offset > $last_offset ){
-							echo $this->HRV_MSA_PROCESS_TR_DELIVERY_H_SAVE( $payload, (int)$message->offset );
+							echo $this->HRV_MSA_PROCESS_TRANSACTION_STATEMENT( $payload, (int)$message->offset, $topic, str_replace('HRV_MSA_PROCESS_', '', $topic) );
 						}	
 					}
 				}
@@ -82,9 +80,7 @@ class KafkaController extends Controller {
 	}
 
 	# PHP Query MOBILE_INSPECTION.TR_EBCC_VALIDATION_H
-	public function HRV_MSA_PROCESS_TR_DELIVERY_H_SAVE( $payload, $offset ) {
-		// return '['.$offset.'] '.$payload['EBVTC'].PHP_EOL;
-		
+	public function HRV_MSA_PROCESS_TRANSACTION_STATEMENT( $payload, $offset, $topic, $table ) {
 		//update offset payloads
 		$this->eharvesting_oracle->statement( "
 			UPDATE 
@@ -93,76 +89,37 @@ class KafkaController extends Controller {
 				OFFSET = $offset,
 				EXECUTE_DATE = SYSDATE
 			WHERE
-				TOPIC_NAME = 'HRV_MSA_PROCESS_TR_DELIVERY_H'
+				TOPIC_NAME = '$topic'
 		" );
 		$this->eharvesting_oracle->commit();
 
+		$insert_into = ''; $insert_value = ''; $update_set = '';
+		foreach ($payload as $field => $value) {
+			$insert_into .= $insert_into==''?$field:','.$field;
+			$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
+			$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
+		}
+		// dd($payload);
+		$table = $table.'_TEST';
 		try {
-			$INSTM = date( 'YmdHis', strtotime( $payload['INSTM'] ) );
-			$STIME = date( 'YmdHis', strtotime( $payload['STIME'] ) );
-			$sql = "INSERT INTO 
-					EHARVESTING.HRV_MSA_PROCESS_TR_DELIVERY_H ( 
-						ID, 
-						HOLDING_NAME, 
-						HOLDING_CODE, 
-						REGION_NAME,
-						REGION_CODE, 
-						COMPANY_NAME, 
-						COMPANY_CODE, 
-						BA_NAME, 
-						BA_CODE, 
-						NAB_CODE, 
-						NAB_REMARK, 
-						IS_DOUBLE_HANDLING, 
-						SYNC_STATUS, 
-						SYNC_TIME, 
-						SYNC_BY_ID, 
-						SYNC_BY_NAME, 
-						INSERT_TIME, 
-						INSERT_BY_ID, 
-						INSERT_BY_NAME, 
-						UPDATE_TIME, 
-						UPDATE_BY_ID, 
-						UPDATE_BY_NAME, 
-						TRANSACTION_TIME, 
-						APP_VER, 
-						STATUS 
-				) 
-				VALUES (
-					'{$payload['ID']}', 
-					'{$payload['HOLDING_NAME']}', 
-					'{$payload['HOLDING_CODE']}', 
-					'{$payload['REGION_NAME']}', 
-					'{$payload['REGION_CODE']}', 
-					'{$payload['COMPANY_NAME']}', 
-					'{$payload['COMPANY_CODE']}', 
-					'{$payload['BA_NAME']}', 
-					'{$payload['BA_CODE']}', 
-					'{$payload['NAB_REMARK']}', 
-					'{$payload['IS_DOUBLE_HANDLING']}', 
-					'{$payload['SYNC_STATUS']}', 
-					'{$payload['SYNC_TIME']}', 
-					'{$payload['SYNC_BY_ID']}', 
-					'{$payload['SYNC_BY_NAME']}', 
-					'{$payload['INSERT_TIME']}', 
-					'{$payload['INSERT_BY_ID']}', 
-					'{$payload['INSERT_BY_NAME']}', 
-					'{$payload['UPDATE_TIME']}', 
-					'{$payload['UPDATE_BY_ID']}', 
-					'{$payload['UPDATE_BY_NAME']}', 
-					'{$payload['TRANSACTION_TIME']}', 
-					'{$payload['APP_VER']}', 
-					'{$payload['STATUS']}'
-				)";
+			$sql = "BEGIN
+						INSERT INTO EHARVESTING.$table ($insert_into) 
+						VALUES ($insert_value);
+					EXCEPTION
+						WHEN dup_val_on_index THEN
+						UPDATE EHARVESTING.$table
+						SET $update_set
+						WHERE ID='{$payload['ID']}';
+					END;";
 			$this->eharvesting_oracle->statement($sql);
 			$this->eharvesting_oracle->commit();
-			return date( 'Y-m-d H:i:s' ).' - HRV_MSA_PROCESS_TR_DELIVERY_H - INSERT '.$payload['EBVTC'].' - SUCCESS '.PHP_EOL;
+			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - SUCCESS '.PHP_EOL;
 		}
 		catch ( \Throwable $e ) {
-			return date( 'Y-m-d H:i:s' ).' - HRV_MSA_PROCESS_TR_DELIVERY_H - INSERT '.$payload['EBVTC'].' - FAILED '.$e->getMessage().PHP_EOL;
+			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
 		}
 		catch ( \Exception $e ) {
-			return date( 'Y-m-d H:i:s' ).' - HRV_MSA_PROCESS_TR_DELIVERY_H - INSERT '.$payload['EBVTC'].' - FAILED '.$e->getMessage().PHP_EOL;
+			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
 		}
 		
 	}

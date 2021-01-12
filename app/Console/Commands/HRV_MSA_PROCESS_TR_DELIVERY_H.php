@@ -37,7 +37,7 @@ class HRV_MSA_PROCESS_TR_DELIVERY_H extends Command
      */
     public function handle()
     {
-        $exe = app('App\Http\Controllers\KafkaController')->HRV_MSA_PROCESS_TR_DELIVERY_H();
+        $exe = app('App\Http\Controllers\KafkaController')->HRV_MSA_PROCESS_TRANSACTION('HRV_MSA_PROCESS_TR_DELIVERY_H');
 		echo $exe;
     }
 }
