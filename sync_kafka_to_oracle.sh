@@ -3,33 +3,62 @@
 pkill -f "php artisan Kafka:"
 
 #PROD
-#cd /var/www/html/inspection_web/tapmi 
-#nohup php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H &
-#nohup php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D &
-#nohup php artisan Kafka:INS_MSA_FINDING_TR_FINDING &
-#nohup php artisan Kafka:INS_MSA_INSPECTION_TR_INSPECTION_GENBA &
-#nohup php artisan Kafka:INS_MSA_INSPECTION_TR_BLOCK_INSPECTION_H &
-#nohup php artisan Kafka:INS_MSA_INSPECTION_TR_BLOCK_INSPECTION_D &
-#nohup php artisan Kafka:INS_MSA_INSPECTION_TR_TRACK_INSPECTION &
+#cd /var/www/html/hrv-msa-postgre-oracle
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_USER_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_VEHICLE_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_USER_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_USER_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_LHM_REPORT_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_LHM_REPORT_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB &
 
 #sleep 1
 
 #QA
- cd /var/www/html/ins-qa-webs/tapmi 
- nohup php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H &
- nohup php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D &
- nohup php artisan Kafka:INS_MSA_AUTH_TM_USER_AUTH &
- nohup php artisan Kafka:INS_MSA_FINDING_TR_FINDING &
- nohup php artisan Kafka:INS_MSA_INSPECTION_TR_INSPECTION_GENBA &
- nohup php artisan Kafka:INS_MSA_INSPECTION_TR_BLOCK_INSPECTION_H &
- nohup php artisan Kafka:INS_MSA_INSPECTION_TR_BLOCK_INSPECTION_D &
- nohup php artisan Kafka:INS_MSA_INSPECTION_TR_TRACK_INSPECTION &
+ cd /var/www/html/hrv-msa-qa-postgre-oracle
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_H &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_ITEM_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_USER_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_VEHICLE_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_H &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_ITEM_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_USER_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_H &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_ITEM_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_USER_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_LHM_REPORT_H &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_TR_LHM_REPORT_ITEM_D &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC &
+ nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB &
 
 #sleep 1
 
 #DEV
-#cd /var/www/html/ins-dev-webs/tapmi 
-#nohup php artisan Kafka:INS_MSA_AUTH_TM_USER_AUTH &
+#  cd /var/www/html/hrv-msa-dev-postgre-oracle
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_USER_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_DELIVERY_VEHICLE_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_ACTIVITY_USER_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_HARVEST_REPORT_USER_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_LHM_REPORT_H &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_TR_LHM_REPORT_ITEM_D &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC &
+#  nohup php artisan Kafka:HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB &
 
 sleep 1
 
