@@ -1,0 +1,10 @@
+--- Nohup
+nohup php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H &
+nohup php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D &
+nohup php artisan Kafka:INS_MSA_AUTH_TM_USER_AUTH &
+
+--- Simulasi php artisan
+$ php artisan tinker
+$ app('App\Http\Controllers\KafkaController')->RUN_INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H()
+$ app('App\Http\Controllers\KafkaController')->RUN_INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D()
+$ app('App\Http\Controllers\KafkaController')->RUN_INS_MSA_AUTH_TM_USER_AUTH()

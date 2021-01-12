@@ -1,0 +1,34 @@
+
+In ClassLoader.php line 444:
+                                                                                                                                                                 
+  include(C:\xampp\htdocs\TAP\hrv-msa-dev-postgre-oracle\vendor\composer/../../app/Console/Commands/INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H.php): failed to open s  
+  tream: No such file or directory                                                                                                                               
+                                                                                                                                                                 
+
+
+In ClassLoader.php line 444:
+                                                                                                                                                                 
+  include(C:\xampp\htdocs\TAP\hrv-msa-dev-postgre-oracle\vendor\composer/../../app/Console/Commands/INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H.php): failed to open s  
+  tream: No such file or directory                                                                                                                               
+                                                                                                                                                                 
+
+
+In ClassLoader.php line 444:
+                                                                                                                                                                 
+  include(C:\xampp\htdocs\TAP\hrv-msa-dev-postgre-oracle\vendor\composer/../../app/Console/Commands/INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H.php): failed to open s  
+  tream: No such file or directory                                                                                                                               
+                                                                                                                                                                 
+
+
+In ClassLoader.php line 444:
+                                                                                                                                                                 
+  include(C:\xampp\htdocs\TAP\hrv-msa-dev-postgre-oracle\vendor\composer/../../app/Console/Commands/INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H.php): failed to open s  
+  tream: No such file or directory                                                                                                                               
+                                                                                                                                                                 
+
+
+In KafkaController.php line 36:
+                                  
+  Class 'RdKafka\Conf' not found  
+                                  
+
