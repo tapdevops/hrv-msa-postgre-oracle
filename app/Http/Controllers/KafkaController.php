@@ -241,13 +241,13 @@ class KafkaController extends Controller {
 						END;";
 				$this->eharvesting_oracle->statement($sql);
 				$this->eharvesting_oracle->commit();
-				// return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - SUCCESS '.PHP_EOL;
+				// return date( 'Y-m-d H:i:s' )." - $topic - INSERT - SUCCESS '.PHP_EOL;
 		}
 		catch ( \Throwable $e ) {
-			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
+			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$topic.' - FAILED '.$e->getMessage().PHP_EOL;
 		}
 		catch ( \Exception $e ) {
-			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
+			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$topic.' - FAILED '.$e->getMessage().PHP_EOL;
 		}
 	}
 }
