@@ -188,6 +188,10 @@ class KafkaController extends Controller {
 						$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN'){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC' || $field=='KODE_DENDA_PANEN'){
+								if($field=='JUMLAH')
+								{
+									$value = $value==null?0:$value;
+								}
 								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
 							}else {
 								$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
