@@ -184,18 +184,14 @@ class KafkaController extends Controller {
 				{
 					if($field!='POST_STATUS' && $field!='POST_TIMESTAMP')
 					{
-						if($field=='JUMLAH')
-						{
-							$value = $value==null?0:$value;
-						}
-						$insert_into .= $insert_into==''?$field:','.$field;
-						$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
-						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN'){
+						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN' && ISSET($payload['JUMLAH'])){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC' || $field=='KODE_DENDA_PANEN'){
 								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
 							}else {
 								$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
 							}
+							$insert_into .= $insert_into==''?$field:','.$field;
+							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
 						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB'){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='ESTATE_CODE' || $field=='NO_NAB' || $field=='NO_BCC' || $field=='TANGGAL'){
@@ -203,6 +199,8 @@ class KafkaController extends Controller {
 							}else {
 								$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
 							}
+							$insert_into .= $insert_into==''?$field:','.$field;
+							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
 						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC'){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC'){
@@ -210,6 +208,8 @@ class KafkaController extends Controller {
 							}else {
 								$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
 							}
+							$insert_into .= $insert_into==''?$field:','.$field;
+							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
 					}
 				}
