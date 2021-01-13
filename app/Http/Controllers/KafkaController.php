@@ -94,7 +94,7 @@ class KafkaController extends Controller {
 		$this->eharvesting_oracle->commit();
 
 		// dd($payload);
-		$table = $table.'_TEST';
+		// $table = $table.'_TEST';
 		try {
 			if(ISSET($payload['ID']))
 			{
