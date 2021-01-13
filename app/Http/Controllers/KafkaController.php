@@ -179,7 +179,7 @@ class KafkaController extends Controller {
 		$this->eharvesting_oracle->commit();
 
 		try {
-				$insert_into = ''; $insert_value = ''; $update_set = ''; $where = '';
+				$insert_into = ''; $insert_value = ''; $update_set = ''; $where = '';$update_conditional_set = ''; 
 				foreach ($payload as $field => $value) 
 				{
 					if($field!='POST_STATUS' && $field!='POST_TIMESTAMP')
@@ -208,11 +208,20 @@ class KafkaController extends Controller {
 							}else {
 								$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
 							}
+							if($field=='EXPORT_STATUS' || $field=='EXPORT_TIMESTAMP')
+							{
+								$update_conditional_set .= $update_conditional_set==''?$field."='".$value."'":",".$field."='".$value."'";
+							}
 							$insert_into .= $insert_into==''?$field:','.$field;
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
 					}
 				}
+				if($update_conditional_set!='')
+				{
+					$update_conditional_set = "UPDATE EHARVESTING.T_STATUS_TO_SAP_DENDA_PANEN SET $update_conditional_set WHERE $where;";
+				}
+
 				$sql = "
 						DECLARE
 							n_count number;
@@ -224,6 +233,7 @@ class KafkaController extends Controller {
 								UPDATE EHARVESTING.$table
 								SET $update_set
 								WHERE $where;
+								$update_conditional_set
 							ELSE
 								INSERT INTO EHARVESTING.$table ($insert_into) 
 								VALUES ($insert_value);
