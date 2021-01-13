@@ -1,6 +1,6 @@
 #!/bin/sh
 #Kill All Artisan Kafka Process
-pkill -f "php artisan Kafka:"
+pkill -f "php artisan Kafka:HRV_"
 
 #PROD
 #cd /var/www/html/hrv-msa-postgre-oracle
