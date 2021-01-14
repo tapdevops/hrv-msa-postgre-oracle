@@ -86,39 +86,40 @@ class KafkaController extends Controller {
 		" );
 		$this->eharvesting_oracle->commit();
 
-		try {
-			if(ISSET($payload['ID']))
-			{
-				$insert_into = ''; $insert_value = ''; $update_set = '';
-				foreach ($payload as $field => $value) 
-				{
-					$insert_into .= $insert_into==''?$field:','.$field;
-					$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
-					$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
-				}
-				$sql = "BEGIN
-							INSERT INTO EHARVESTING.$table ($insert_into) 
-							VALUES ($insert_value);
-						EXCEPTION
-							WHEN dup_val_on_index THEN
-							UPDATE EHARVESTING.$table
-							SET $update_set
-							WHERE ID='{$payload['ID']}';
-						END;";
-				$this->eharvesting_oracle->statement($sql);
-				$this->eharvesting_oracle->commit();
-				// return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - SUCCESS '.PHP_EOL;
+		if(ISSET($payload['ID']))
+		{
+			try {
+					$insert_into = ''; $insert_value = ''; $update_set = '';
+					foreach ($payload as $field => $value) 
+					{
+						$value = str_replace("'","`",$value);
+						$insert_into .= $insert_into==''?$field:','.$field;
+						$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
+						$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
+					}
+					$sql = "BEGIN
+								INSERT INTO EHARVESTING.$table ($insert_into) 
+								VALUES ($insert_value);
+							EXCEPTION
+								WHEN dup_val_on_index THEN
+								UPDATE EHARVESTING.$table
+								SET $update_set
+								WHERE ID='{$payload['ID']}';
+							END;";
+					$this->eharvesting_oracle->statement($sql);
+					$this->eharvesting_oracle->commit();
+					// return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - SUCCESS '.PHP_EOL;
 			}
-			else 
-			{
-				return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.PHP_EOL;
+			catch ( \Throwable $e ) {
+				return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
+			}
+			catch ( \Exception $e ) {
+				return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
 			}
 		}
-		catch ( \Throwable $e ) {
-			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
-		}
-		catch ( \Exception $e ) {
-			return date( 'Y-m-d H:i:s' )." - $topic - INSERT ".$payload['ID'].' - FAILED '.$e->getMessage().PHP_EOL;
+		else 
+		{
+			return date( 'Y-m-d H:i:s' ).' - $topic - INSERT ( NO ID ) - FAILED '.PHP_EOL;
 		}
 		
 	}
