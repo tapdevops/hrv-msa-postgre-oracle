@@ -194,6 +194,10 @@ class KafkaController extends Controller {
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
 						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB'){
+							if($field=='ID_NAB_TANGGAL')
+							{
+								$field = 'ID_NAB_TGL';
+							}
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='ESTATE_CODE' || $field=='NO_NAB' || $field=='NO_BCC' || $field=='TANGGAL'){
 								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
 							}else {
