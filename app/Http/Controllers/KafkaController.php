@@ -178,14 +178,24 @@ class KafkaController extends Controller {
 				TOPIC_NAME = '$topic'
 		" );
 		$this->eharvesting_oracle->commit();
-
+		$denda_panen = array('COMP_CODE','PROFILE_NAME','NO_BCC','KODE_DENDA_PANEN','JUMLAH','EXPORT_STATUS','EXPORT_TIMESTAMP',
+							 'POST_STATUS','POST_TIMESTAMP');
+		$ebcc = array('COMP_CODE','PROFILE_NAME','NO_BCC','NIK_PEMANEN','TANGGAL','NO_TPH','CUSTOMER','PLANT','AFDELING','BLOCK',
+					  'HECTARE','TBS_BAYAR','BRONDOLAN','TBS_KIRIM','NIK_MANDOR','NIK_KRANI_BUAH','FLAG_GANDENG','NIK_GANDENG',
+					  'COMP_CODE_KARY','PROFILE_NAME_KARY','AFDELING_KARY','EXPORT_STATUS','EXPORT_TIMESTAMP','POST_STATUS',
+					  'POST_TIMESTAMP','TBS_PANEN');
+		$nab = array('COMP_CODE','PROFILE_NAME','ESTATE_CODE','NO_NAB','NO_BCC','TANGGAL','NO_POLISI','EXPORT_STATUS','EXPORT_TIMESTAMP',
+					'POST_STATUS','POST_TIMESTAMP','ID_NAB_TGL','ID_NAB_TANGGAL');
+		$check['HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN'] = array_fill_keys($denda_panen, true);
+		$check['HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB'] = array_fill_keys($nab, true);
+		$check['HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC'] = array_fill_keys($ebcc, true);
 		try {
 				$insert_into = ''; $insert_value = ''; $update_set = ''; $where = '';$update_conditional_set = ''; 
 				foreach ($payload as $field => $value) 
 				{
 					if($field!='POST_STATUS' && $field!='POST_TIMESTAMP')
 					{
-						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN' && ISSET($payload['JUMLAH'])){
+						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN' && ISSET($payload['JUMLAH']) && $check[$topic][$field]){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC' || $field=='KODE_DENDA_PANEN'){
 								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
 							}else {
@@ -194,7 +204,7 @@ class KafkaController extends Controller {
 							$insert_into .= $insert_into==''?$field:','.$field;
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
-						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB'){
+						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB' && $check[$topic][$field]){
 							if($field=='ID_NAB_TANGGAL')
 							{
 								$field = 'ID_NAB_TGL';
@@ -207,7 +217,7 @@ class KafkaController extends Controller {
 							$insert_into .= $insert_into==''?$field:','.$field;
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
-						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC'){
+						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC' && $check[$topic][$field]){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC'){
 								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
 							}else {
