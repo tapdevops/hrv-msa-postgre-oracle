@@ -236,7 +236,10 @@ class KafkaController extends Controller {
 				{
 					$update_conditional_set = "UPDATE EHARVESTING.T_STATUS_TO_SAP_DENDA_PANEN SET $update_conditional_set WHERE $where;";
 				}
-
+				if($where=='')
+				{
+					print_r($payload);
+				}
 				$sql = "
 						DECLARE
 							n_count number;
