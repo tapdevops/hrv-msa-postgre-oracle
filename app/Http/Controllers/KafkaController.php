@@ -236,29 +236,28 @@ class KafkaController extends Controller {
 				{
 					$update_conditional_set = "UPDATE EHARVESTING.T_STATUS_TO_SAP_DENDA_PANEN SET $update_conditional_set WHERE $where;";
 				}
-				if($where=='')
+				if($insert_into!='' && $update_set !='')
 				{
-					print_r($payload);
-				}
-				$sql = "
-						DECLARE
-							n_count number;
-						BEGIN
-							SELECT count(*) into n_count 
-							FROM EHARVESTING.$table
-							WHERE $where;
-							IF n_count > 0 THEN
-								UPDATE EHARVESTING.$table
-								SET $update_set
+					$sql = "
+							DECLARE
+								n_count number;
+							BEGIN
+								SELECT count(*) into n_count 
+								FROM EHARVESTING.$table
 								WHERE $where;
-								$update_conditional_set
-							ELSE
-								INSERT INTO EHARVESTING.$table ($insert_into) 
-								VALUES ($insert_value);
-							END IF;
-						END;";
-				$this->eharvesting_oracle->statement($sql);
-				$this->eharvesting_oracle->commit();
+								IF n_count > 0 THEN
+									UPDATE EHARVESTING.$table
+									SET $update_set
+									WHERE $where;
+									$update_conditional_set
+								ELSE
+									INSERT INTO EHARVESTING.$table ($insert_into) 
+									VALUES ($insert_value);
+								END IF;
+							END;";
+					$this->eharvesting_oracle->statement($sql);
+					$this->eharvesting_oracle->commit();
+				}
 				// return date( 'Y-m-d H:i:s' )." - $topic - INSERT - SUCCESS '.PHP_EOL;
 		}
 		catch ( \Throwable $e ) {
