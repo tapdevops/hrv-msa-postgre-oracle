@@ -195,7 +195,7 @@ class KafkaController extends Controller {
 				{
 					if($field!='POST_STATUS' && $field!='POST_TIMESTAMP')
 					{
-						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN' && ISSET($payload['JUMLAH']) && $check[$topic][$field]){
+						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN' && ISSET($payload['JUMLAH']) && ISSET($check[$topic][$field])){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC' || $field=='KODE_DENDA_PANEN'){
 								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
 							}else {
@@ -204,7 +204,7 @@ class KafkaController extends Controller {
 							$insert_into .= $insert_into==''?$field:','.$field;
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
-						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB' && $check[$topic][$field]){
+						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB' && ISSET($check[$topic][$field])){
 							if($field=='ID_NAB_TANGGAL')
 							{
 								$field = 'ID_NAB_TGL';
@@ -217,7 +217,7 @@ class KafkaController extends Controller {
 							$insert_into .= $insert_into==''?$field:','.$field;
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
-						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC' && $check[$topic][$field]){
+						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC' && ISSET($check[$topic][$field])){
 							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC'){
 								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
 							}else {
