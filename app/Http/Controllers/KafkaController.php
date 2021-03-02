@@ -154,7 +154,7 @@ class KafkaController extends Controller {
 					$insert_into = ''; $insert_value = ''; $update_set = '';
 					foreach ($payload as $field => $value) 
 					{	
-						if(ISSET($check[$topic][$field])){
+						if(ISSET($check[$topic][$field]) || $field=='ID'){
 							$value = str_replace("'","`",$value);
 							$insert_into .= $insert_into==''?$field:','.$field;
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
