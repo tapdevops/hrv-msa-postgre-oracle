@@ -243,18 +243,19 @@ class KafkaController extends Controller {
 		" );
 		$this->eharvesting_oracle->commit();
 		$denda_panen = array('COMP_CODE','PROFILE_NAME','NO_BCC','KODE_DENDA_PANEN','JUMLAH','EXPORT_STATUS','EXPORT_TIMESTAMP',
-							 'POST_STATUS','POST_TIMESTAMP');
+							 'POST_STATUS','POST_TIMESTAMP','UPDATE_TIMESTAMP');
 		$ebcc = array('COMP_CODE','PROFILE_NAME','NO_BCC','NIK_PEMANEN','TANGGAL','NO_TPH','CUSTOMER','PLANT','AFDELING','BLOCK',
 					  'HECTARE','TBS_BAYAR','BRONDOLAN','TBS_KIRIM','NIK_MANDOR','NIK_KRANI_BUAH','FLAG_GANDENG','NIK_GANDENG',
 					  'COMP_CODE_KARY','PROFILE_NAME_KARY','AFDELING_KARY','EXPORT_STATUS','EXPORT_TIMESTAMP','POST_STATUS',
-					  'POST_TIMESTAMP','TBS_PANEN');
+					  'POST_TIMESTAMP','TBS_PANEN','UPDATE_TIMESTAMP');
 		$nab = array('COMP_CODE','PROFILE_NAME','ESTATE_CODE','NO_NAB','NO_BCC','TANGGAL','NO_POLISI','EXPORT_STATUS','EXPORT_TIMESTAMP',
-					'POST_STATUS','POST_TIMESTAMP','ID_NAB_TGL','ID_NAB_TANGGAL');
+					'POST_STATUS','POST_TIMESTAMP','ID_NAB_TGL','ID_NAB_TANGGAL','UPDATE_TIMESTAMP');
 		$check['HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN'] = array_fill_keys($denda_panen, true);
 		$check['HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB'] = array_fill_keys($nab, true);
 		$check['HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC'] = array_fill_keys($ebcc, true);
 		try {
-				$insert_into = ''; $insert_value = ''; $update_set = ''; $where = '';$update_conditional_set = ''; 
+				$insert_into = ''; $insert_value = ''; $update_set = ''; $where = '';
+				$payload['EXPORT_TIMESTAMP'] = 'CURRENT_TIMESTAMP';
 				foreach ($payload as $field => $value) 
 				{
 					if($field!='POST_STATUS' && $field!='POST_TIMESTAMP')
@@ -287,19 +288,12 @@ class KafkaController extends Controller {
 							}else {
 								$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
 							}
-							if($field=='EXPORT_STATUS' || $field=='EXPORT_TIMESTAMP')
-							{
-								$update_conditional_set .= $update_conditional_set==''?$field."='".$value."'":",".$field."='".$value."'";
-							}
 							$insert_into .= $insert_into==''?$field:','.$field;
 							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
 					}
 				}
-				if($update_conditional_set!='')
-				{
-					$update_conditional_set = "UPDATE EHARVESTING.T_STATUS_TO_SAP_DENDA_PANEN SET $update_conditional_set WHERE $where;";
-				}
+
 				if($insert_into!='' && $update_set !='')
 				{
 					$sql = "
@@ -313,12 +307,12 @@ class KafkaController extends Controller {
 									UPDATE EHARVESTING.$table
 									SET $update_set
 									WHERE $where;
-									$update_conditional_set
 								ELSE
 									INSERT INTO EHARVESTING.$table ($insert_into) 
 									VALUES ($insert_value);
 								END IF;
 							END;";
+					$sql = str_replace("'CURRENT_TIMESTAMP'","CURRENT_TIMESTAMP",$sql);
 					$this->eharvesting_oracle->statement($sql);
 					$this->eharvesting_oracle->commit();
 				}
