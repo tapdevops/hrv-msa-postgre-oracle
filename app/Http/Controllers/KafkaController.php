@@ -255,7 +255,7 @@ class KafkaController extends Controller {
 		$check['HRV_MSA_PROCESS_T_STATUS_TO_SAP_EBCC'] = array_fill_keys($ebcc, true);
 		try {
 				$insert_into = ''; $insert_value = ''; $update_set = ''; $where = '';
-				$payload['EXPORT_TIMESTAMP'] = 'CURRENT_TIMESTAMP';
+				$payload['UPDATE_TIMESTAMP'] = 'CURRENT_TIMESTAMP';
 				foreach ($payload as $field => $value) 
 				{
 					if($field!='POST_STATUS' && $field!='POST_TIMESTAMP')
