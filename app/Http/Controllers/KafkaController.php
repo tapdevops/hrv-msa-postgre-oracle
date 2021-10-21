@@ -261,13 +261,15 @@ class KafkaController extends Controller {
 					if($field!='POST_STATUS' && $field!='POST_TIMESTAMP')
 					{
 						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_DENDA_PANEN' && ISSET($payload['JUMLAH']) && ISSET($check[$topic][$field])){
-							if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC' || $field=='KODE_DENDA_PANEN'){
-								$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
-							}else {
-								$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
+							if(intval($payload['JUMLAH'])>0){
+								if($field=='COMP_CODE' || $field=='PROFILE_NAME' || $field=='NO_BCC' || $field=='KODE_DENDA_PANEN'){
+									$where .= $where==''?$field."='".$value."'":" AND ".$field."='".$value."'";
+								}else {
+									$update_set .= $update_set==''?$field."='".$value."'":",".$field."='".$value."'";
+								}
+								$insert_into .= $insert_into==''?$field:','.$field;
+								$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 							}
-							$insert_into .= $insert_into==''?$field:','.$field;
-							$insert_value .= $insert_value==''?"'".$value."'":",'".$value."'";
 						}
 						if($topic=='HRV_MSA_PROCESS_T_STATUS_TO_SAP_NAB' && ISSET($check[$topic][$field])){
 							if($field=='ID_NAB_TANGGAL')
